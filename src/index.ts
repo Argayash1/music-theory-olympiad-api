@@ -1,12 +1,21 @@
 // Импорт npm-пакетов
 import express from 'express';
+import mongoose from 'mongoose';
 
-// Слушаем 3000 порт
-const { PORT = 3000 } = process.env;
+const { PORT = 3001 } = process.env;
 
 const app = express();
 
+const options = {
+  useNewUrlParser: true,
+} as mongoose.ConnectOptions;
+
+mongoose.connect('mongodb://127.0.0.1:27017/musictheoryolympiaddb', options);
+
+// Миддлвэры для парсинга
+app.use(express.json()); // для собирания JSON-формата
+app.use(express.urlencoded({ extended: true }));
+
 app.listen(PORT, () => {
-  // Если всё работает, консоль покажет, какой порт приложение слушает
   console.log(`App listening on port ${PORT}`);
 });
