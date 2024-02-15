@@ -12,7 +12,7 @@ const router = Router();
 
 router.get('/', getMusOlympData);
 
-router.post('/', createMusOlympData);
+router.post('/', musOlympDataValidator, createMusOlympData);
 
 router.patch('/:musOlympId', musOlympDataIdValidator, musOlympDataValidator, updateMusOlympData);
 

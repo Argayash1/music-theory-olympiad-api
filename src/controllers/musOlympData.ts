@@ -63,11 +63,11 @@ const createMusOlympData = async (req: Request, res: Response, next: NextFunctio
 const updateMusOlympData = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { musOlympId } = req.params;
-    const { text, author } = req.body;
+    const { olympNumber, dates, registrationDates, city, topic, participants } = req.body;
     // обновим имя найденного по _id пользователя
     const musOlympData = await MusOlympData.findByIdAndUpdate(
       musOlympId,
-      { text, author }, // Передадим объект опций:
+      { olympNumber, dates, registrationDates, city, topic, participants }, // Передадим объект опций:
       {
         new: true, // обработчик then получит на вход обновлённую запись
         runValidators: true, // данные будут валидированы перед изменением
