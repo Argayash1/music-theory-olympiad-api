@@ -44,7 +44,6 @@ const musOlympDataSchema = new Schema<IMusOlympData>(
       type: String,
       required: [true, 'не переданы участники олимпиады'],
       minlength: [2, 'длина участников олимпиады должна быть не менее 2 символов'],
-      maxlength: [100, 'длина участников олимпиады должна быть не более 100 символов'],
     },
   },
   { versionKey: false },
