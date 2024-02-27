@@ -1,0 +1,142 @@
+// Импорт типов из express
+import { Request, Response, NextFunction } from 'express';
+
+// Импорт классов ошибок из mongoose.Error
+import { Error } from 'mongoose';
+
+// Импорт классов ошибок из конструкторов ошибок
+import NotFoundError from '../errors/NotFoundError'; // импортируем класс ошибок NotFoundError
+import BadRequestError from '../errors/BadRequestError';
+
+// Импорт модели news и её интерфейса
+import Advert from '../models/advert';
+
+// Импорт статус-кодов ошибок
+import {
+  BAD_REQUEST_INCORRECT_PARAMS_ERROR_MESSAGE,
+  CAST_INCORRECT_NEWSID_ERROR_MESSAGE,
+  CREATED_201,
+  DELETE_NEWS_MESSAGE,
+  NEWS_NOT_FOUND_ERROR_MESSAGE,
+  VALIDATION_ERROR_MESSAGE,
+} from '../utils/constants';
+
+const { ValidationError, CastError } = Error;
+
+const getAdverts = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const page = req.query.page ? Number(req.query.page as string) : undefined;
+    const limit = req.query.limit ? Number(req.query.limit as string) : undefined;
+
+    if (Number.isNaN(page) || Number.isNaN(limit)) {
+      throw new BadRequestError(BAD_REQUEST_INCORRECT_PARAMS_ERROR_MESSAGE);
+    }
+
+    const skip = page && limit ? (page - 1) * limit : 0;
+
+    const totalAdvertsCount = await Advert.countDocuments();
+
+    let advertQuery = Advert.find();
+
+    if (page && limit) {
+      advertQuery = advertQuery.skip(skip).limit(limit);
+    }
+
+    const announcements = await advertQuery;
+
+    res.send({
+      data: announcements,
+      totalPages: limit ? Math.ceil(totalAdvertsCount / limit) : undefined,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+const getAdvertById = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { advertId } = req.params;
+    const advert = await Advert.findById(advertId);
+    res.send({ data: advert });
+  } catch (err) {
+    if (err instanceof CastError) {
+      next(new BadRequestError(CAST_INCORRECT_NEWSID_ERROR_MESSAGE));
+    } else {
+      next(err);
+    }
+  }
+};
+
+const createAnnouncement = async (req: Request, res: Response, next: NextFunction) => {
+  const { createdAt, title, content } = req.body;
+  try {
+    const advert = await Advert.create({ createdAt, title, content });
+    res.status(CREATED_201).send(advert);
+  } catch (err) {
+    if (err instanceof ValidationError) {
+      const errorMessage = Object.values(err.errors)
+        .map((error) => error.message)
+        .join(', ');
+      next(new BadRequestError(`${VALIDATION_ERROR_MESSAGE} ${errorMessage}`));
+    } else {
+      next(err);
+    }
+  }
+};
+
+const updateAdvertData = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { advertId } = req.params;
+    const { title, content } = req.body;
+
+    // обновим имя найденного по _id пользователя
+    const advert = await Advert.findByIdAndUpdate(
+      advertId,
+      { title, content }, // Передадим объект опций:
+      {
+        new: true, // обработчик then получит на вход обновлённую запись
+        runValidators: true, // данные будут валидированы перед изменением
+      },
+    );
+
+    if (!advert) {
+      throw new NotFoundError('Такого пользователя нет');
+    }
+
+    res.send(advert);
+  } catch (err) {
+    if (err instanceof ValidationError) {
+      const errorMessage = Object.values(err.errors)
+        .map((error) => error.message)
+        .join(', ');
+      next(new BadRequestError(`Некорректные данные: ${errorMessage}`));
+      return;
+    }
+    if (err instanceof CastError) {
+      next(new BadRequestError('Некорректный Id пользователя'));
+    } else {
+      next(err);
+    }
+  }
+};
+
+// Функция, которая удаляет новость по идентификатору
+const deleteAdvertById = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { advertId } = req.params;
+    const advert = await Advert.findById(advertId);
+    if (!advert) {
+      throw new NotFoundError(NEWS_NOT_FOUND_ERROR_MESSAGE);
+    }
+    await Advert.findByIdAndDelete(advertId);
+    res.send({ message: DELETE_NEWS_MESSAGE });
+  } catch (err) {
+    if (err instanceof CastError) {
+      next(new BadRequestError(CAST_INCORRECT_NEWSID_ERROR_MESSAGE));
+    } else {
+      next(err);
+    }
+  }
+};
+
+export { getAdverts, getAdvertById, createAnnouncement, updateAdvertData, deleteAdvertById };

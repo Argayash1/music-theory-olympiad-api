@@ -9,21 +9,30 @@ import NotFoundError from '../errors/NotFoundError'; // импортируем �
 import BadRequestError from '../errors/BadRequestError';
 
 // Импорт модели news и её интерфейса
-import Announcement from '../models/announcement';
+import JuruMember from '../models/juryMember';
 
 // Импорт статус-кодов ошибок
 import {
   BAD_REQUEST_INCORRECT_PARAMS_ERROR_MESSAGE,
-  CAST_INCORRECT_NEWSID_ERROR_MESSAGE,
+  CAST_INCORRECT_MEMBERID_ERROR_MESSAGE,
   CREATED_201,
-  DELETE_NEWS_MESSAGE,
-  NEWS_NOT_FOUND_ERROR_MESSAGE,
+  DELETE_PROJECT_MESSAGE,
+  PROJECT_NOT_FOUND_ERROR_MESSAGE,
   VALIDATION_ERROR_MESSAGE,
 } from '../utils/constants';
 
 const { ValidationError, CastError } = Error;
 
-const getAnnouncements = async (req: Request, res: Response, next: NextFunction) => {
+interface IMember {
+  imageUrl?: string;
+  surname?: string;
+  patronymic?: string;
+  name?: string;
+  about?: string;
+}
+
+// Функция, которая возвращает все новости
+const getJuryMembers = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const page = req.query.page ? Number(req.query.page as string) : undefined;
     const limit = req.query.limit ? Number(req.query.limit as string) : undefined;
@@ -34,44 +43,50 @@ const getAnnouncements = async (req: Request, res: Response, next: NextFunction)
 
     const skip = page && limit ? (page - 1) * limit : 0;
 
-    const totalAnnouncementsCount = await Announcement.countDocuments();
+    const totalJuryMembersCount = await JuruMember.countDocuments();
 
-    let announcementQuery = Announcement.find();
+    let juryMembersQuery = JuruMember.find();
 
     if (page && limit) {
-      announcementQuery = announcementQuery.skip(skip).limit(limit);
+      juryMembersQuery = juryMembersQuery.skip(skip).limit(limit);
     }
 
-    const announcements = await announcementQuery;
+    const members = await juryMembersQuery;
 
     res.send({
-      data: announcements,
-      totalPages: limit ? Math.ceil(totalAnnouncementsCount / limit) : undefined,
+      data: members,
+      totalPages: limit ? Math.ceil(totalJuryMembersCount / limit) : undefined,
     });
   } catch (err) {
     next(err);
   }
 };
 
-const getAnnouncementById = async (req: Request, res: Response, next: NextFunction) => {
+const getJuryMemberById = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { announcementId } = req.params;
-    const announcement = await Announcement.findById(announcementId);
-    res.send({ data: announcement });
+    const { memberId } = req.params;
+    const juryMember = await JuruMember.findById(memberId);
+    res.send({ data: juryMember });
   } catch (err) {
     if (err instanceof CastError) {
-      next(new BadRequestError(CAST_INCORRECT_NEWSID_ERROR_MESSAGE));
+      next(new BadRequestError(CAST_INCORRECT_MEMBERID_ERROR_MESSAGE));
     } else {
       next(err);
     }
   }
 };
 
-const createAnnouncement = async (req: Request, res: Response, next: NextFunction) => {
-  const { createdAt, title, content } = req.body;
+const createJuryMember = async (req: Request, res: Response, next: NextFunction) => {
+  const { imageUrl, surname, patronymic, name, about } = req.body;
   try {
-    const announcement = await Announcement.create({ createdAt, title, content });
-    res.status(CREATED_201).send(announcement);
+    const juryMember = await JuruMember.create({
+      imageUrl,
+      surname,
+      patronymic,
+      name,
+      about,
+    });
+    res.status(CREATED_201).send(juryMember);
   } catch (err) {
     if (err instanceof ValidationError) {
       const errorMessage = Object.values(err.errors)
@@ -84,26 +99,24 @@ const createAnnouncement = async (req: Request, res: Response, next: NextFunctio
   }
 };
 
-const updateAnnouncementData = async (req: Request, res: Response, next: NextFunction) => {
+const updateJuryMemberData = async (req: Request, res: Response, next: NextFunction, memberData: IMember) => {
   try {
-    const { announcementId } = req.params;
-    const { title, content } = req.body;
-
+    const { memberId } = req.params;
     // обновим имя найденного по _id пользователя
-    const announcement = await Announcement.findByIdAndUpdate(
-      announcementId,
-      { title, content }, // Передадим объект опций:
+    const juryMember = await JuruMember.findByIdAndUpdate(
+      memberId,
+      memberData, // Передадим объект опций:
       {
         new: true, // обработчик then получит на вход обновлённую запись
         runValidators: true, // данные будут валидированы перед изменением
       },
     );
 
-    if (!announcement) {
+    if (!juryMember) {
       throw new NotFoundError('Такого пользователя нет');
     }
 
-    res.send(announcement);
+    res.send(juryMember);
   } catch (err) {
     if (err instanceof ValidationError) {
       const errorMessage = Object.values(err.errors)
@@ -120,23 +133,40 @@ const updateAnnouncementData = async (req: Request, res: Response, next: NextFun
   }
 };
 
+const updateJuryMemberInfo = (req: Request, res: Response, next: NextFunction) => {
+  const { surname, patronymic, name, about } = req.body;
+  updateJuryMemberData(req, res, next, { surname, patronymic, name, about });
+};
+
+const updateJuryMemberImage = (req: Request, res: Response, next: NextFunction) => {
+  const { imageUrl } = req.body;
+  updateJuryMemberData(req, res, next, { imageUrl });
+};
+
 // Функция, которая удаляет новость по идентификатору
-const deleteAnnouncementById = async (req: Request, res: Response, next: NextFunction) => {
+const deleteUnionMemberById = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { announcementId } = req.params;
-    const announcement = await Announcement.findById(announcementId);
-    if (!announcement) {
-      throw new NotFoundError(NEWS_NOT_FOUND_ERROR_MESSAGE);
+    const { memberId } = req.params;
+    const juryMember = await JuruMember.findById(memberId);
+    if (!juryMember) {
+      throw new NotFoundError(PROJECT_NOT_FOUND_ERROR_MESSAGE);
     }
-    await Announcement.findByIdAndDelete(announcementId);
-    res.send({ message: DELETE_NEWS_MESSAGE });
+    await JuruMember.findByIdAndDelete(memberId);
+    res.send({ message: DELETE_PROJECT_MESSAGE });
   } catch (err) {
     if (err instanceof CastError) {
-      next(new BadRequestError(CAST_INCORRECT_NEWSID_ERROR_MESSAGE));
+      next(new BadRequestError(CAST_INCORRECT_MEMBERID_ERROR_MESSAGE));
     } else {
       next(err);
     }
   }
 };
 
-export { getAnnouncements, getAnnouncementById, createAnnouncement, updateAnnouncementData, deleteAnnouncementById };
+export {
+  getJuryMembers,
+  getJuryMemberById,
+  updateJuryMemberInfo,
+  updateJuryMemberImage,
+  createJuryMember,
+  deleteUnionMemberById,
+};

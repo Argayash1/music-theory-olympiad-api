@@ -1,7 +1,7 @@
 import { celebrate, Joi } from 'celebrate';
 import { urlRegEx } from '../../utils/constants';
 
-const announcementDataValidator = celebrate({
+const advertDataValidator = celebrate({
   // валидируем тело запроса
   body: Joi.object().keys({
     title: Joi.string().required().min(2).max(60),
@@ -9,18 +9,18 @@ const announcementDataValidator = celebrate({
   }),
 });
 
-const announcementQueryParamsValidator = celebrate({
+const advertQueryParamsValidator = celebrate({
   query: Joi.object().keys({
     page: Joi.number().integer().min(1),
     limit: Joi.number().integer().min(1).max(100),
   }),
 });
 
-const announcementIdValidator = celebrate({
+const advertIdValidator = celebrate({
   // валидируем параметры
   params: Joi.object().keys({
-    announcementId: Joi.string().hex().length(24).required(),
+    advertId: Joi.string().hex().length(24).required(),
   }),
 });
 
-export { announcementDataValidator, announcementQueryParamsValidator, announcementIdValidator };
+export { advertDataValidator, advertQueryParamsValidator, advertIdValidator };

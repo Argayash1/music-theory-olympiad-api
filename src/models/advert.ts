@@ -1,12 +1,12 @@
 import { Schema, model, Document } from 'mongoose';
 
-interface IAnnouncement extends Document {
+interface IAdvert extends Document {
   createdAt?: Date;
   title: string;
   content: string;
 }
 
-const announcementSchema = new Schema<IAnnouncement>(
+const advertSchema = new Schema<IAdvert>(
   {
     createdAt: {
       type: Date,
@@ -27,4 +27,4 @@ const announcementSchema = new Schema<IAnnouncement>(
   { versionKey: false },
 );
 
-export default model<IAnnouncement>('announcement', announcementSchema);
+export default model<IAdvert>('advert', advertSchema);
