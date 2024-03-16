@@ -16,8 +16,8 @@ import {
   BAD_REQUEST_INCORRECT_PARAMS_ERROR_MESSAGE,
   CAST_INCORRECT_MEMBERID_ERROR_MESSAGE,
   CREATED_201,
-  DELETE_PROJECT_MESSAGE,
-  PROJECT_NOT_FOUND_ERROR_MESSAGE,
+  DELETE_MEMBER_MESSAGE,
+  MEMBER_NOT_FOUND_ERROR_MESSAGE,
   VALIDATION_ERROR_MESSAGE,
 } from '../utils/constants';
 
@@ -68,7 +68,7 @@ const getJuryMemberById = async (req: Request, res: Response, next: NextFunction
     const { memberId } = req.params;
     const juryMember = await JuruMember.findById(memberId);
     if (!juryMember) {
-      throw new NotFoundError(PROJECT_NOT_FOUND_ERROR_MESSAGE);
+      throw new NotFoundError(MEMBER_NOT_FOUND_ERROR_MESSAGE);
     }
     res.send({ data: juryMember });
   } catch (err) {
@@ -154,10 +154,10 @@ const deleteUnionMemberById = async (req: Request, res: Response, next: NextFunc
     const { memberId } = req.params;
     const juryMember = await JuruMember.findById(memberId);
     if (!juryMember) {
-      throw new NotFoundError(PROJECT_NOT_FOUND_ERROR_MESSAGE);
+      throw new NotFoundError(MEMBER_NOT_FOUND_ERROR_MESSAGE);
     }
     await JuruMember.findByIdAndDelete(memberId);
-    res.send({ message: DELETE_PROJECT_MESSAGE });
+    res.send({ message: DELETE_MEMBER_MESSAGE });
   } catch (err) {
     if (err instanceof CastError) {
       next(new BadRequestError(CAST_INCORRECT_MEMBERID_ERROR_MESSAGE));

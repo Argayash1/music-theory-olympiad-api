@@ -5,7 +5,7 @@ import { Router } from 'express'; // импортируем роутер из ex
 import { getCurrentUserInfo, updateUserData } from '../controllers/users';
 
 // Импорт валидаторов
-const { userDataValidator } = require('../middlewares/validators/userValidator');
+import { userDataValidator } from '../middlwares/validators/userValidator';
 
 const router = Router();
 
