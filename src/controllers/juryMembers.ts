@@ -67,6 +67,9 @@ const getJuryMemberById = async (req: Request, res: Response, next: NextFunction
   try {
     const { memberId } = req.params;
     const juryMember = await JuruMember.findById(memberId);
+    if (!juryMember) {
+      throw new NotFoundError(PROJECT_NOT_FOUND_ERROR_MESSAGE);
+    }
     res.send({ data: juryMember });
   } catch (err) {
     if (err instanceof CastError) {

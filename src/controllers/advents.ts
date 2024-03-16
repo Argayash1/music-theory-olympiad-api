@@ -14,10 +14,10 @@ import Advert from '../models/advert';
 // Импорт статус-кодов ошибок
 import {
   BAD_REQUEST_INCORRECT_PARAMS_ERROR_MESSAGE,
-  CAST_INCORRECT_NEWSID_ERROR_MESSAGE,
+  CAST_INCORRECT_ADVERTID_ERROR_MESSAGE,
   CREATED_201,
-  DELETE_NEWS_MESSAGE,
-  NEWS_NOT_FOUND_ERROR_MESSAGE,
+  DELETE_ADVERT_MESSAGE,
+  ADVERT_NOT_FOUND_ERROR_MESSAGE,
   VALIDATION_ERROR_MESSAGE,
 } from '../utils/constants';
 
@@ -57,10 +57,13 @@ const getAdvertById = async (req: Request, res: Response, next: NextFunction) =>
   try {
     const { advertId } = req.params;
     const advert = await Advert.findById(advertId);
+    if (!advert) {
+      throw new NotFoundError(ADVERT_NOT_FOUND_ERROR_MESSAGE);
+    }
     res.send({ data: advert });
   } catch (err) {
     if (err instanceof CastError) {
-      next(new BadRequestError(CAST_INCORRECT_NEWSID_ERROR_MESSAGE));
+      next(new BadRequestError(CAST_INCORRECT_ADVERTID_ERROR_MESSAGE));
     } else {
       next(err);
     }
@@ -126,13 +129,13 @@ const deleteAdvertById = async (req: Request, res: Response, next: NextFunction)
     const { advertId } = req.params;
     const advert = await Advert.findById(advertId);
     if (!advert) {
-      throw new NotFoundError(NEWS_NOT_FOUND_ERROR_MESSAGE);
+      throw new NotFoundError(ADVERT_NOT_FOUND_ERROR_MESSAGE);
     }
     await Advert.findByIdAndDelete(advertId);
-    res.send({ message: DELETE_NEWS_MESSAGE });
+    res.send({ message: DELETE_ADVERT_MESSAGE });
   } catch (err) {
     if (err instanceof CastError) {
-      next(new BadRequestError(CAST_INCORRECT_NEWSID_ERROR_MESSAGE));
+      next(new BadRequestError(CAST_INCORRECT_ADVERTID_ERROR_MESSAGE));
     } else {
       next(err);
     }

@@ -13,10 +13,10 @@ import PrepMaterial from '../models/prepMaterial';
 
 // Импорт статус-кодов ошибок
 import {
-  CAST_INCORRECT_ARTICLEID_ERROR_MESSAGE,
+  CAST_INCORRECT_PREPMATERIALID_ERROR_MESSAGE,
   CREATED_201,
-  DELETE_ARTICLE_MESSAGE,
-  ARTICLE_NOT_FOUND_ERROR_MESSAGE,
+  DELETE_PREPMATERIAL_MESSAGE,
+  PREPMATERIAL_NOT_FOUND_ERROR_MESSAGE,
   VALIDATION_ERROR_MESSAGE,
   BAD_REQUEST_INCORRECT_PARAMS_ERROR_MESSAGE,
 } from '../utils/constants';
@@ -57,10 +57,13 @@ const getPrepMaterialById = async (req: Request, res: Response, next: NextFuncti
   try {
     const { prepMaterialId } = req.params;
     const prepMaterial = await PrepMaterial.findById(prepMaterialId);
+    if (!prepMaterial) {
+      throw new NotFoundError(PREPMATERIAL_NOT_FOUND_ERROR_MESSAGE);
+    }
     res.send({ data: prepMaterial });
   } catch (err) {
     if (err instanceof CastError) {
-      next(new BadRequestError(CAST_INCORRECT_ARTICLEID_ERROR_MESSAGE));
+      next(new BadRequestError(CAST_INCORRECT_PREPMATERIALID_ERROR_MESSAGE));
     } else {
       next(err);
     }
@@ -126,13 +129,13 @@ const deletePrepMaterialById = async (req: Request, res: Response, next: NextFun
     const { prepMaterialId } = req.params;
     const prepMaterial = await PrepMaterial.findById(prepMaterialId);
     if (!prepMaterial) {
-      throw new NotFoundError(ARTICLE_NOT_FOUND_ERROR_MESSAGE);
+      throw new NotFoundError(PREPMATERIAL_NOT_FOUND_ERROR_MESSAGE);
     }
     await PrepMaterial.findByIdAndDelete(prepMaterialId);
-    res.send({ message: DELETE_ARTICLE_MESSAGE });
+    res.send({ message: DELETE_PREPMATERIAL_MESSAGE });
   } catch (err) {
     if (err instanceof CastError) {
-      next(new BadRequestError(CAST_INCORRECT_ARTICLEID_ERROR_MESSAGE));
+      next(new BadRequestError(CAST_INCORRECT_PREPMATERIALID_ERROR_MESSAGE));
     } else {
       next(err);
     }

@@ -14,11 +14,11 @@ import Result from '../models/result';
 // Импорт статус-кодов ошибок
 import {
   BAD_REQUEST_INCORRECT_PARAMS_ERROR_MESSAGE,
-  BAD_REUEST_INCORRECT_REPORTINDEX_ERROR_MESSAGE,
-  CAST_INCORRECT_REPORTID_ERROR_MESSAGE,
+  BAD_REUEST_INCORRECT_RESULTINDEX_ERROR_MESSAGE,
+  CAST_INCORRECT_RESULTID_ERROR_MESSAGE,
   CREATED_201,
-  DELETE_REPORT_MESSAGE,
-  REPORT_NOT_FOUND_ERROR_MESSAGE,
+  DELETE_RESULT_MESSAGE,
+  RESULT_NOT_FOUND_ERROR_MESSAGE,
   VALIDATION_ERROR_MESSAGE,
 } from '../utils/constants';
 
@@ -61,7 +61,7 @@ const getResultByIndex = async (req: Request, res: Response, next: NextFunction)
 
     if (isNaN(resultIndex) || resultIndex >= results.length) {
       // Проверка валидности resultIndex
-      throw new BadRequestError(BAD_REUEST_INCORRECT_REPORTINDEX_ERROR_MESSAGE);
+      throw new BadRequestError(BAD_REUEST_INCORRECT_RESULTINDEX_ERROR_MESSAGE);
     }
 
     const result = results[resultIndex]; // Получение отчёта из массива по индексу
@@ -131,13 +131,13 @@ const deleteResultById = async (req: Request, res: Response, next: NextFunction)
     const { resultId } = req.params;
     const result = await Result.findById(resultId);
     if (!result) {
-      throw new NotFoundError(REPORT_NOT_FOUND_ERROR_MESSAGE);
+      throw new NotFoundError(RESULT_NOT_FOUND_ERROR_MESSAGE);
     }
     await Result.findByIdAndDelete(resultId);
-    res.send({ message: DELETE_REPORT_MESSAGE });
+    res.send({ message: DELETE_RESULT_MESSAGE });
   } catch (err) {
     if (err instanceof CastError) {
-      next(new BadRequestError(CAST_INCORRECT_REPORTID_ERROR_MESSAGE));
+      next(new BadRequestError(CAST_INCORRECT_RESULTID_ERROR_MESSAGE));
     } else {
       next(err);
     }

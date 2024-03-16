@@ -13,10 +13,10 @@ import MusOlympData from '../models/musOlympData';
 
 // Импорт статус-кодов ошибок
 import {
-  CAST_INCORRECT_AUDIOID_ERROR_MESSAGE,
+  CAST_INCORRECT_OLYMPDATAID_ERROR_MESSAGE,
   CREATED_201,
-  DELETE_AUDIO_MESSAGE,
-  AUDIO_NOT_FOUND_ERROR_MESSAGE,
+  DELETE_OLYMPDATA_MESSAGE,
+  OLYMPDATA_NOT_FOUND_ERROR_MESSAGE,
   VALIDATION_ERROR_MESSAGE,
 } from '../utils/constants';
 
@@ -102,13 +102,13 @@ const deleteMuseOlympDataById = async (req: Request, res: Response, next: NextFu
     const musOlympData = await MusOlympData.findById(musOlympId);
     console.log(musOlympData);
     if (!musOlympData) {
-      throw new NotFoundError(AUDIO_NOT_FOUND_ERROR_MESSAGE);
+      throw new NotFoundError(OLYMPDATA_NOT_FOUND_ERROR_MESSAGE);
     }
     await MusOlympData.findByIdAndDelete(musOlympId);
-    res.send({ message: DELETE_AUDIO_MESSAGE });
+    res.send({ message: DELETE_OLYMPDATA_MESSAGE });
   } catch (err) {
     if (err instanceof CastError) {
-      next(new BadRequestError(CAST_INCORRECT_AUDIOID_ERROR_MESSAGE));
+      next(new BadRequestError(CAST_INCORRECT_OLYMPDATAID_ERROR_MESSAGE));
     } else {
       next(err);
     }

@@ -13,10 +13,10 @@ import Archive from '../models/archive';
 
 // Импорт статус-кодов ошибок
 import {
-  CAST_INCORRECT_ARTICLEID_ERROR_MESSAGE,
+  CAST_INCORRECT_ARCHIVEID_ERROR_MESSAGE,
   CREATED_201,
-  DELETE_ARTICLE_MESSAGE,
-  ARTICLE_NOT_FOUND_ERROR_MESSAGE,
+  DELETE_ARCHIVE_MESSAGE,
+  ARCHIVE_NOT_FOUND_ERROR_MESSAGE,
   VALIDATION_ERROR_MESSAGE,
   BAD_REQUEST_INCORRECT_PARAMS_ERROR_MESSAGE,
 } from '../utils/constants';
@@ -67,7 +67,7 @@ const getArchiveById = async (req: Request, res: Response, next: NextFunction) =
     res.send({ data: archive });
   } catch (err) {
     if (err instanceof CastError) {
-      next(new BadRequestError(CAST_INCORRECT_ARTICLEID_ERROR_MESSAGE));
+      next(new BadRequestError(CAST_INCORRECT_ARCHIVEID_ERROR_MESSAGE));
     } else {
       next(err);
     }
@@ -133,13 +133,13 @@ const deleteArchiveById = async (req: Request, res: Response, next: NextFunction
     const { archiveId } = req.params;
     const archive = await Archive.findById(archiveId);
     if (!archive) {
-      throw new NotFoundError(ARTICLE_NOT_FOUND_ERROR_MESSAGE);
+      throw new NotFoundError(ARCHIVE_NOT_FOUND_ERROR_MESSAGE);
     }
     await Archive.findByIdAndDelete(archiveId);
-    res.send({ message: DELETE_ARTICLE_MESSAGE });
+    res.send({ message: DELETE_ARCHIVE_MESSAGE });
   } catch (err) {
     if (err instanceof CastError) {
-      next(new BadRequestError(CAST_INCORRECT_ARTICLEID_ERROR_MESSAGE));
+      next(new BadRequestError(CAST_INCORRECT_ARCHIVEID_ERROR_MESSAGE));
     } else {
       next(err);
     }
