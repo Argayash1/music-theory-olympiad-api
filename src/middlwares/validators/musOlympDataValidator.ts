@@ -4,7 +4,7 @@ import { urlRegEx } from '../../utils/constants';
 const musOlympDataValidator = celebrate({
   // валидируем тело запроса
   body: Joi.object().keys({
-    olympNumber: Joi.number().required(),
+    olympNumber: Joi.string().required().max(2),
     dates: Joi.string().required().min(2).max(30),
     registrationDates: Joi.string().required().min(2).max(60),
     city: Joi.string().required().min(2).max(30),

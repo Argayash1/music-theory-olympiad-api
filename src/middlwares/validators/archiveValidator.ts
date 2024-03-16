@@ -4,7 +4,8 @@ import { urlRegEx } from '../../utils/constants';
 const archiveDataValidator = celebrate({
   // валидируем тело запроса
   body: Joi.object().keys({
-    year: Joi.string().required().max(2),
+    year: Joi.string().required().max(4),
+    category: Joi.string().required().max(10),
     dictations: Joi.array()
       .items(
         Joi.object().keys({
@@ -44,6 +45,7 @@ const archiveQueryParamsValidator = celebrate({
   query: Joi.object().keys({
     page: Joi.number().integer().min(1),
     limit: Joi.number().integer().min(1).max(100),
+    category: Joi.number().integer().min(0),
   }),
 });
 

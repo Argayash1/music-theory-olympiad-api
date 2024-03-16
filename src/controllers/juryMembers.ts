@@ -29,6 +29,7 @@ interface IMember {
   patronymic?: string;
   name?: string;
   about?: string;
+  link?: string;
 }
 
 // Функция, которая возвращает все новости
@@ -77,7 +78,7 @@ const getJuryMemberById = async (req: Request, res: Response, next: NextFunction
 };
 
 const createJuryMember = async (req: Request, res: Response, next: NextFunction) => {
-  const { imageUrl, surname, patronymic, name, about } = req.body;
+  const { imageUrl, surname, patronymic, name, about, link } = req.body;
   try {
     const juryMember = await JuruMember.create({
       imageUrl,
@@ -85,6 +86,7 @@ const createJuryMember = async (req: Request, res: Response, next: NextFunction)
       patronymic,
       name,
       about,
+      link,
     });
     res.status(CREATED_201).send(juryMember);
   } catch (err) {
@@ -134,8 +136,8 @@ const updateJuryMemberData = async (req: Request, res: Response, next: NextFunct
 };
 
 const updateJuryMemberInfo = (req: Request, res: Response, next: NextFunction) => {
-  const { surname, patronymic, name, about } = req.body;
-  updateJuryMemberData(req, res, next, { surname, patronymic, name, about });
+  const { surname, patronymic, name, about, link } = req.body;
+  updateJuryMemberData(req, res, next, { surname, patronymic, name, about, link });
 };
 
 const updateJuryMemberImage = (req: Request, res: Response, next: NextFunction) => {

@@ -9,6 +9,7 @@ interface IArchiveObject {
 
 interface IArchive extends Document {
   year: string;
+  category: string;
   dictations: IArchiveObject[];
   soundAnalysis: IArchiveObject[];
   harmonization: IArchiveObject[];
@@ -19,7 +20,12 @@ const archiveSchema = new Schema<IArchive>(
   {
     year: {
       type: String,
-      required: [true, 'не указан год'],
+      required: [true, 'не указан год архива'],
+    },
+    category: {
+      type: String,
+      required: [true, 'не указана категория архива'],
+      maxlength: [10, 'длина категории архива должна быть не более 10 символов'],
     },
     dictations: {
       type: [

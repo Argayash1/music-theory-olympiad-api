@@ -9,6 +9,7 @@ const juryMemberDataValidator = celebrate({
     patronymic: Joi.string().required().min(2).max(30),
     name: Joi.string().required().min(2).max(30),
     about: Joi.string().required().min(2),
+    link: Joi.string().required(),
   }),
 });
 
@@ -26,6 +27,7 @@ const juryMemberInfoDataValidator = celebrate({
     patronymic: Joi.string().required().min(2).max(30),
     name: Joi.string().required().min(2).max(30),
     about: Joi.string().required().min(2),
+    link: Joi.string().required(),
   }),
 });
 

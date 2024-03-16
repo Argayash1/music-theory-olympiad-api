@@ -25,18 +25,25 @@ const { ValidationError, CastError } = Error;
 
 const getArchives = async (req: Request, res: Response, next: NextFunction) => {
   try {
+    const category = req.query.category ? Number(req.query.category as string) : undefined;
     const page = req.query.page ? Number(req.query.page as string) : undefined;
     const limit = req.query.limit ? Number(req.query.limit as string) : undefined;
 
-    if (Number.isNaN(page) || Number.isNaN(limit)) {
+    if (Number.isNaN(page) || Number.isNaN(limit) || Number.isNaN(category)) {
       throw new BadRequestError(BAD_REQUEST_INCORRECT_PARAMS_ERROR_MESSAGE);
     }
 
     const skip = page && limit ? (page - 1) * limit : 0;
 
-    const totalArchivesCount = await Archive.countDocuments();
+    let query = {};
 
-    let archivesQuery = Archive.find();
+    if (category) {
+      query = { category: category };
+    }
+
+    const totalArchivesCount = await Archive.countDocuments(query);
+
+    let archivesQuery = Archive.find(query);
 
     if (page && limit) {
       archivesQuery = archivesQuery.skip(skip).limit(limit);
@@ -68,9 +75,9 @@ const getArchiveById = async (req: Request, res: Response, next: NextFunction) =
 };
 
 const createArchive = async (req: Request, res: Response, next: NextFunction) => {
-  const { year, dictations, soundAnalysis, harmonization, solfeggio } = req.body;
+  const { year, category, dictations, soundAnalysis, harmonization, solfeggio } = req.body;
   try {
-    const archive = await Archive.create({ year, dictations, soundAnalysis, harmonization, solfeggio });
+    const archive = await Archive.create({ year, category, dictations, soundAnalysis, harmonization, solfeggio });
     res.status(CREATED_201).send(archive);
   } catch (err) {
     if (err instanceof ValidationError) {
@@ -87,12 +94,12 @@ const createArchive = async (req: Request, res: Response, next: NextFunction) =>
 const updateArchiveData = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { archiveId } = req.params;
-    const { year, dictations, soundAnalysis, harmonization, solfeggio } = req.body;
+    const { year, category, dictations, soundAnalysis, harmonization, solfeggio } = req.body;
 
     // обновим имя найденного по _id пользователя
     const archive = await Archive.findByIdAndUpdate(
       archiveId,
-      { year, dictations, soundAnalysis, harmonization, solfeggio }, // Передадим объект опций:
+      { year, dictations, category, soundAnalysis, harmonization, solfeggio }, // Передадим объект опций:
       {
         new: true, // обработчик then получит на вход обновлённую запись
         runValidators: true, // данные будут валидированы перед изменением

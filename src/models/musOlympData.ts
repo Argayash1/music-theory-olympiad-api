@@ -1,7 +1,7 @@
 import { Schema, model, Document } from 'mongoose';
 
 interface IMusOlympData extends Document {
-  olympNumber: number;
+  olympNumber: string;
   dates: string;
   registrationDates: string;
   city: string;
@@ -12,7 +12,7 @@ interface IMusOlympData extends Document {
 const musOlympDataSchema = new Schema<IMusOlympData>(
   {
     olympNumber: {
-      type: Number,
+      type: String,
       required: [true, 'не передан номер олимпиады'],
       maxlength: [2, 'длина номера олимпиады должна быть не более 2 символов'],
     },

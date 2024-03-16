@@ -2,6 +2,7 @@
 import express from 'express';
 import mongoose from 'mongoose';
 
+import cookieParser from 'cookie-parser';
 import { errors } from 'celebrate';
 import errorHandler from './middlwares/errorHandler';
 import limiter from './middlwares/limiter';
@@ -32,6 +33,7 @@ app.use(corsHandler);
 // Миддлвэры для парсинга
 app.use(express.json()); // для собирания JSON-формата
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser()); // подключаем парсер кук как мидлвэр
 
 // Роутер
 app.use(router);

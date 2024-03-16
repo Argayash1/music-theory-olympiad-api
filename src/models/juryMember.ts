@@ -8,6 +8,7 @@ interface IJuryMember extends Document {
   patronymic: string;
   name: string;
   about: string;
+  link: string;
 }
 
 const juryMemberSchema = new Schema<IJuryMember>(
@@ -42,6 +43,14 @@ const juryMemberSchema = new Schema<IJuryMember>(
       type: String,
       required: [true, 'не передана информация о члене жюри'],
       minlength: [2, 'длина информация о члене жюри должна быть не менее 2 символов'],
+    },
+    link: {
+      type: String,
+      required: [true, 'не передана ссылка на веб-страницу члена жюри'],
+      validate: {
+        validator: (url: string) => isUrl(url, { protocols: ['http', 'https'], require_protocol: true }),
+        message: 'некорректный формат ссылки на веб-страницу члена жюри',
+      },
     },
   },
   { versionKey: false },

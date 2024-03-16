@@ -18,7 +18,7 @@ const router = Router();
 
 router.get('/', archiveQueryParamsValidator, getArchives);
 
-router.post('/', createArchive);
+router.post('/', archiveDataValidator, createArchive);
 
 router.get('/:archiveId', archiveIdValidator, getArchiveById);
 
