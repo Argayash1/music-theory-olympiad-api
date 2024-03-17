@@ -2,8 +2,8 @@ import { Request, Response, NextFunction } from 'express';
 
 // Массив доменов, с которых разрешены кросс-доменные запросы
 const allowedCors = [
-  'https://argayash-movies-explorer.nomoredomains.rocks',
-  'http://argayash-movies-explorer.nomoredomains.rocks',
+  'https://олимпиадавизеля.рф',
+  'http://олимпиадавизеля.рф',
   'https://localhost:3000',
   'http://localhost:3000',
 ];
