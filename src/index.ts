@@ -1,3 +1,6 @@
+import dotenv from 'dotenv';
+dotenv.config();
+
 // Импорт npm-пакетов
 import express from 'express';
 import mongoose from 'mongoose';
@@ -11,8 +14,7 @@ import { errorLogger, requestLogger } from './middlwares/logger';
 import router from './routes/index';
 import helmet from 'helmet';
 import corsHandler from './middlwares/corsHandler';
-
-const { PORT = 3001 } = process.env;
+import { DB, DB_DEV, NODE_ENV, PORT } from './utils/config';
 
 const app = express();
 
@@ -20,7 +22,13 @@ const options = {
   useNewUrlParser: true,
 } as mongoose.ConnectOptions;
 
-mongoose.connect('mongodb://127.0.0.1:27017/musictheoryolympiaddb', options);
+// mongoose.connect(NODE_ENV === 'production' ? DB : DB_DEV, options);
+
+if (NODE_ENV === 'production') {
+  mongoose.connect(DB!, options);
+} else {
+  mongoose.connect(DB_DEV, options);
+}
 
 // Миддлвэр для логирования запросов
 app.use(requestLogger); // подключаем логгер запросов
@@ -43,6 +51,4 @@ app.use(errorLogger); // подключаем логгер ошибок
 app.use(errors()); // обработчик ошибок celebrate
 app.use(errorHandler); // централизолванная обработка ошибок
 
-app.listen(PORT, () => {
-  console.log(`App listening on port ${PORT}`);
-});
+app.listen(PORT);
