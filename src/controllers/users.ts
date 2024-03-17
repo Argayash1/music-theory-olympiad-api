@@ -36,10 +36,11 @@ const { NODE_ENV, JWT_SECRET, JWT_SECRET_DEV } = require('../utils/config');
 // Функция, которая возвращает информацию о пользователе (email и имя)
 const getCurrentUserInfo = (req: Request, res: Response, next: NextFunction) => {
   const { _id: userId } = (req as CustomRequest).user;
+  console.log(userId);
 
   User.findById(userId)
     .then((user) => res.send(user))
-    .catch(next);
+    .catch((err) => console.log(err));
 };
 
 // Функция (контроллер) регистрации, которая создаёт пользователя
@@ -59,6 +60,7 @@ const createUser = (req: Request, res: Response, next: NextFunction) => {
     .then((user) => res.status(CREATED_201).send({ data: user }))
     // данные не записались, вернём ошибку
     .catch((err) => {
+      console.log(err.code);
       if (err.code === DUPLICATION_11000) {
         next(new ConflictError(CONFLICT_ERROR_MESSAGE));
         return;

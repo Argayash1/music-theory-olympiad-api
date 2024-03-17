@@ -12,7 +12,7 @@ import NotFoundError from '../errors/NotFoundError'; // импортируем �
 import { NOT_FOUND_ERROR_MESSAGE } from '../utils/constants';
 import authenticationMiddleware from '../middlwares/authenticationMiddleware';
 import { createUserValidator, loginValidator } from '../middlwares/validators/userValidator';
-import { createUser, login } from '../controllers/users';
+import { createUser, login, logout } from '../controllers/users';
 
 const router = Router();
 
@@ -30,6 +30,7 @@ router.use('/juryMembers', juryMembers);
 router.use('/results', results);
 router.use('/prepMaterials', prepMaterials);
 router.use('/archives', archives);
+router.get('/signout', logout); // добавили роутер для выхода из системы (очищения куки)
 
 // роут для запросов по несуществующим URL
 router.use('*', (req, res, next) => {
