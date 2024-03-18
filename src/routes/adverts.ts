@@ -6,13 +6,13 @@ import {
   createAnnouncement,
   updateAdvertData,
   deleteAdvertById,
-} from '../controllers/advents';
+} from '../controllers/adverts';
 
 import {
   advertDataValidator,
   advertQueryParamsValidator,
   advertIdValidator,
-} from '../middlwares/validators/adverttValidator';
+} from '../middlwares/validators/advertValidator';
 
 const router = Router();
 
