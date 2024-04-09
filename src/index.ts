@@ -22,8 +22,6 @@ const options = {
   useNewUrlParser: true,
 } as mongoose.ConnectOptions;
 
-// mongoose.connect(NODE_ENV === 'production' ? DB : DB_DEV, options);
-
 if (NODE_ENV === 'production') {
   mongoose.connect(DB!, options);
 } else {

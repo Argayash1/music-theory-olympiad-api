@@ -1,12 +1,6 @@
 import { Router } from 'express'; // импортируем роутер из express
 
-import {
-  getAdverts,
-  getAdvertById,
-  createAnnouncement,
-  updateAdvertData,
-  deleteAdvertById,
-} from '../controllers/adverts';
+import { getAdverts, getAdvertById, createAdvert, updateAdvertData, deleteAdvertById } from '../controllers/adverts';
 
 import {
   advertDataValidator,
@@ -20,7 +14,7 @@ router.get('/', advertQueryParamsValidator, getAdverts);
 
 router.get('/:advertId', advertIdValidator, getAdvertById);
 
-router.post('/', advertDataValidator, createAnnouncement);
+router.post('/', advertDataValidator, createAdvert);
 
 router.patch('/:advertId', advertIdValidator, advertDataValidator, updateAdvertData);
 

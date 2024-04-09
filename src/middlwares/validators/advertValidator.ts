@@ -6,12 +6,17 @@ const advertDataValidator = celebrate({
   body: Joi.object().keys({
     title: Joi.string().required().min(2).max(60),
     content: Joi.string().required().min(2),
-    linkText: Joi.string().min(2),
-    linkUrl: Joi.string(),
+    links: Joi.array().items(
+      Joi.object().keys({
+        linkText: Joi.string().min(2),
+        linkUrl: Joi.string(),
+      }),
+    ),
   }),
 });
 
 const advertQueryParamsValidator = celebrate({
+  // валидируем query-параметры
   query: Joi.object().keys({
     page: Joi.number().integer().min(1),
     limit: Joi.number().integer().min(1).max(100),

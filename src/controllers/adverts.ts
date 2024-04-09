@@ -70,10 +70,10 @@ const getAdvertById = async (req: Request, res: Response, next: NextFunction) =>
   }
 };
 
-const createAnnouncement = async (req: Request, res: Response, next: NextFunction) => {
-  const { createdAt, title, content, linkText, linkUrl } = req.body;
+const createAdvert = async (req: Request, res: Response, next: NextFunction) => {
+  const { createdAt, title, content, links } = req.body;
   try {
-    const advert = await Advert.create({ createdAt, title, content, linkText, linkUrl });
+    const advert = await Advert.create({ createdAt, title, content, links });
     res.status(CREATED_201).send(advert);
   } catch (err) {
     if (err instanceof ValidationError) {
@@ -90,12 +90,12 @@ const createAnnouncement = async (req: Request, res: Response, next: NextFunctio
 const updateAdvertData = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { advertId } = req.params;
-    const { title, content, linkText, linkUrl } = req.body;
+    const { title, content, links } = req.body;
 
     // обновим имя найденного по _id пользователя
     const advert = await Advert.findByIdAndUpdate(
       advertId,
-      { title, content, linkText, linkUrl }, // Передадим объект опций:
+      { title, content, links }, // Передадим объект опций:
       {
         new: true, // обработчик then получит на вход обновлённую запись
         runValidators: true, // данные будут валидированы перед изменением
@@ -142,4 +142,4 @@ const deleteAdvertById = async (req: Request, res: Response, next: NextFunction)
   }
 };
 
-export { getAdverts, getAdvertById, createAnnouncement, updateAdvertData, deleteAdvertById };
+export { getAdverts, getAdvertById, createAdvert, updateAdvertData, deleteAdvertById };
