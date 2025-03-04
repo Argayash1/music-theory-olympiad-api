@@ -27,6 +27,8 @@ const getAdverts = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const page = req.query.page ? Number(req.query.page as string) : undefined;
     const limit = req.query.limit ? Number(req.query.limit as string) : undefined;
+    const sortBy = req.query.sortBy ? req.query.sortBy as string : undefined;
+    const order = req.query.order === 'desc' ? -1 : 1;
 
     if (Number.isNaN(page) || Number.isNaN(limit)) {
       throw new BadRequestError(BAD_REQUEST_INCORRECT_PARAMS_ERROR_MESSAGE);
@@ -34,9 +36,21 @@ const getAdverts = async (req: Request, res: Response, next: NextFunction) => {
 
     const skip = page && limit ? (page - 1) * limit : 0;
 
+    const filters: any = {};
+
+    for (const [key, value] of Object.entries(req.query)) {
+      if (key !== 'page' && key !== 'limit' && key !== 'sortBy' && key !== 'order') {
+        filters[key] = { $regex: value as string, $options: 'i' };
+      }
+    }
+
     const totalAdvertsCount = await Advert.countDocuments();
 
     let advertQuery = Advert.find();
+
+    if (sortBy) {
+      advertQuery = advertQuery.sort({ [sortBy]: order });
+    }
 
     if (page && limit) {
       advertQuery = advertQuery.skip(skip).limit(limit);
@@ -47,6 +61,7 @@ const getAdverts = async (req: Request, res: Response, next: NextFunction) => {
     res.send({
       data: announcements,
       totalPages: limit ? Math.ceil(totalAdvertsCount / limit) : undefined,
+      total: totalAdvertsCount,
     });
   } catch (err) {
     next(err);

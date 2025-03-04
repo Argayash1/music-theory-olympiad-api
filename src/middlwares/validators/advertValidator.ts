@@ -20,6 +20,10 @@ const advertQueryParamsValidator = celebrate({
   query: Joi.object().keys({
     page: Joi.number().integer().min(1),
     limit: Joi.number().integer().min(1).max(100),
+    sortBy: Joi.string().valid('_id', 'createdAt', 'title', 'content'),
+    order: Joi.string().valid('asc', 'desc'),
+    title: Joi.string().min(1).max(60),
+    content: Joi.string().min(1)
   }),
 });
 
