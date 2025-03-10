@@ -6,6 +6,8 @@ const advertDataValidator = celebrate({
   body: Joi.object().keys({
     title: Joi.string().required().min(2).max(60),
     content: Joi.string().required().min(2),
+    linkText: Joi.string().min(2),
+    linkUrl: Joi.string(),
     links: Joi.array().items(
       Joi.object().keys({
         linkText: Joi.string().min(2),
