@@ -13,7 +13,6 @@ import { NOT_FOUND_ERROR_MESSAGE } from '../utils/constants';
 import authenticationMiddleware from '../middlwares/authenticationMiddleware';
 import { createUserValidator, loginValidator } from '../middlwares/validators/userValidator';
 import { createUser, login, logout } from '../controllers/users';
-import auth from '../middlwares/auth';
 
 const router = Router();
 

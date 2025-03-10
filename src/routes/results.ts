@@ -2,11 +2,11 @@ import { Router } from 'express'; // импортируем роутер из ex
 
 import { getResults, getResultByIndex, createResult, updateResultData, deleteResultById } from '../controllers/results';
 
-import { resultDataValidator, resultIdValidator, resultIndexValidator } from '../middlwares/validators/resultValidator';
+import { resultDataValidator, resultQueryParamsValidator, resultIdValidator, resultIndexValidator, } from '../middlwares/validators/resultValidator';
 
 const router = Router();
 
-router.get('/', getResults);
+router.get('/', resultQueryParamsValidator, getResults);
 
 router.post('/', resultDataValidator, createResult);
 

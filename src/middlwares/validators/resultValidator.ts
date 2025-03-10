@@ -9,6 +9,16 @@ const resultDataValidator = celebrate({
   }),
 });
 
+const resultQueryParamsValidator = celebrate({
+  query: Joi.object().keys({
+    page: Joi.number().integer().min(1),
+    limit: Joi.number().integer().min(1).max(100),
+    sortBy: Joi.string().valid('_id', 'surname', 'name'),
+    order: Joi.string().valid('asc', 'desc'),
+    category: Joi.string().max(2),
+  }),
+});
+
 const resultIdValidator = celebrate({
   // валидируем параметры
   params: Joi.object().keys({
@@ -23,4 +33,4 @@ const resultIndexValidator = celebrate({
   }),
 });
 
-export { resultDataValidator, resultIdValidator, resultIndexValidator };
+export { resultDataValidator, resultQueryParamsValidator, resultIdValidator, resultIndexValidator };
