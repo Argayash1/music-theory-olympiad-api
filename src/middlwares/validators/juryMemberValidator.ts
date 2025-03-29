@@ -17,7 +17,7 @@ const juryMemberQueryParamsValidator = celebrate({
   query: Joi.object().keys({
     page: Joi.number().integer().min(1),
     limit: Joi.number().integer().min(1).max(100),
-    sortBy: Joi.string().valid('_id', 'surname', 'name'),
+    sortBy: Joi.string().valid('_id', 'surname', 'name', 'patronymic', 'imageUrl', 'link', 'about'),
     order: Joi.string().valid('asc', 'desc'),
     category: Joi.string().max(2),
   }),
