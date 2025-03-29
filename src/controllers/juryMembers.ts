@@ -81,7 +81,7 @@ const getJuryMembers = async (req: Request, res: Response, next: NextFunction) =
 const getJuryMemberById = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { memberId } = req.params;
-    const juryMember = await JuruMember.findById(memberId);
+    const juryMember = await JuryMember.findById(memberId);
     if (!juryMember) {
       throw new NotFoundError(MEMBER_NOT_FOUND_ERROR_MESSAGE);
     }
@@ -98,7 +98,7 @@ const getJuryMemberById = async (req: Request, res: Response, next: NextFunction
 const createJuryMember = async (req: Request, res: Response, next: NextFunction) => {
   const { imageUrl, surname, patronymic, name, about, link } = req.body;
   try {
-    const juryMember = await JuruMember.create({
+    const juryMember = await JuryMember.create({
       imageUrl,
       surname,
       patronymic,
@@ -123,7 +123,7 @@ const updateJuryMemberData = async (req: Request, res: Response, next: NextFunct
   try {
     const { memberId } = req.params;
     // обновим имя найденного по _id пользователя
-    const juryMember = await JuruMember.findByIdAndUpdate(
+    const juryMember = await JuryMember.findByIdAndUpdate(
       memberId,
       memberData, // Передадим объект опций:
       {
@@ -167,11 +167,11 @@ const updateJuryMemberImage = (req: Request, res: Response, next: NextFunction) 
 const deleteUnionMemberById = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { memberId } = req.params;
-    const juryMember = await JuruMember.findById(memberId);
+    const juryMember = await JuryMember.findById(memberId);
     if (!juryMember) {
       throw new NotFoundError(MEMBER_NOT_FOUND_ERROR_MESSAGE);
     }
-    await JuruMember.findByIdAndDelete(memberId);
+    await JuryMember.findByIdAndDelete(memberId);
     res.send({ message: DELETE_MEMBER_MESSAGE });
   } catch (err) {
     if (err instanceof CastError) {
