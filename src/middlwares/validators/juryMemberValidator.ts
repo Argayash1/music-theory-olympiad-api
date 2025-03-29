@@ -20,6 +20,8 @@ const juryMemberQueryParamsValidator = celebrate({
     sortBy: Joi.string().valid('_id', 'surname', 'name', 'patronymic', 'imageUrl', 'link', 'about'),
     order: Joi.string().valid('asc', 'desc'),
     category: Joi.string().max(2),
+    name: Joi.string().min(1).max(30),
+    surname: Joi.string().min(1).max(30)
   }),
 });
 
