@@ -9,7 +9,7 @@ import NotFoundError from '../errors/NotFoundError'; // импортируем �
 import BadRequestError from '../errors/BadRequestError';
 
 // Импорт модели news и её интерфейса
-import JuruMember from '../models/juryMember';
+import JuryMember from '../models/juryMember';
 
 // Импорт статус-кодов ошибок
 import {
@@ -54,12 +54,12 @@ const getJuryMembers = async (req: Request, res: Response, next: NextFunction) =
       }
     }
 
-    const totalJuryMembersCount = await JuruMember.countDocuments();
+    const totalJuryMembersCount = await JuryMember.countDocuments();
 
-    let juryMembersQuery = JuruMember.find();
+    let juryMembersQuery = JuryMember.find();
 
-    if (page && limit) {
-      juryMembersQuery = juryMembersQuery.skip(skip).limit(limit);
+    if (sortBy) {
+      juryMembersQuery = juryMembersQuery.sort({ [sortBy]: order });
     }
 
     if (page && limit) {

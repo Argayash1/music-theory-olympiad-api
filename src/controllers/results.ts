@@ -70,24 +70,6 @@ const getResults = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-const getResultByIndex = async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const results = await Result.find({});
-    const resultIndex = parseInt(req.params.resultIndex);
-
-    if (isNaN(resultIndex) || resultIndex >= results.length) {
-      // Проверка валидности resultIndex
-      throw new BadRequestError(BAD_REUEST_INCORRECT_RESULTINDEX_ERROR_MESSAGE);
-    }
-
-    const result = results[resultIndex];
-
-    res.send(result);
-  } catch (err) {
-    next(err);
-  }
-};
-
 const getResultById = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { resultId } = req.params;
@@ -177,4 +159,4 @@ const deleteResultById = async (req: Request, res: Response, next: NextFunction)
   }
 };
 
-export { getResults, getResultByIndex, getResultById, createResult, updateResultData, deleteResultById };
+export { getResults, getResultById, createResult, updateResultData, deleteResultById };

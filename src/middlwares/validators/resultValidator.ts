@@ -26,11 +26,4 @@ const resultIdValidator = celebrate({
   }),
 });
 
-const resultIndexValidator = celebrate({
-  // валидируем параметры
-  params: Joi.object().keys({
-    resultIndex: Joi.string().max(2).required(),
-  }),
-});
-
-export { resultDataValidator, resultQueryParamsValidator, resultIdValidator, resultIndexValidator };
+export { resultDataValidator, resultQueryParamsValidator, resultIdValidator };
