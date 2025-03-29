@@ -46,7 +46,7 @@ const getAdverts = async (req: Request, res: Response, next: NextFunction) => {
 
     const totalAdvertsCount = await Advert.countDocuments();
 
-    let advertQuery = Advert.find();
+    let advertQuery = Advert.find(filters);
 
     if (sortBy) {
       advertQuery = advertQuery.sort({ [sortBy]: order });

@@ -56,7 +56,7 @@ const getJuryMembers = async (req: Request, res: Response, next: NextFunction) =
 
     const totalJuryMembersCount = await JuryMember.countDocuments();
 
-    let juryMembersQuery = JuryMember.find();
+    let juryMembersQuery = JuryMember.find(filters);
 
     if (sortBy) {
       juryMembersQuery = juryMembersQuery.sort({ [sortBy]: order });
