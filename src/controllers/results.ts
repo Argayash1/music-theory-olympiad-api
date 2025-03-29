@@ -15,6 +15,7 @@ import Result from '../models/result';
 import {
   BAD_REQUEST_INCORRECT_PARAMS_ERROR_MESSAGE,
   BAD_REUEST_INCORRECT_RESULTINDEX_ERROR_MESSAGE,
+  CAST_INCORRECT_ADVERTID_ERROR_MESSAGE,
   CAST_INCORRECT_RESULTID_ERROR_MESSAGE,
   CREATED_201,
   DELETE_RESULT_MESSAGE,
@@ -72,18 +73,35 @@ const getResults = async (req: Request, res: Response, next: NextFunction) => {
 const getResultByIndex = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const results = await Result.find({});
-    const resultIndex = parseInt(req.params.resultIndex); // Извлечение resultIndex из URL-адреса и преобразование в число
+    const resultIndex = parseInt(req.params.resultIndex);
 
     if (isNaN(resultIndex) || resultIndex >= results.length) {
       // Проверка валидности resultIndex
       throw new BadRequestError(BAD_REUEST_INCORRECT_RESULTINDEX_ERROR_MESSAGE);
     }
 
-    const result = results[resultIndex]; // Получение отчёта из массива по индексу
+    const result = results[resultIndex];
 
     res.send(result);
   } catch (err) {
     next(err);
+  }
+};
+
+const getResultById = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { resultId } = req.params;
+    const advert = await Result.findById(resultId);
+    if (!advert) {
+      throw new NotFoundError(RESULT_NOT_FOUND_ERROR_MESSAGE);
+    }
+    res.send({ data: advert });
+  } catch (err) {
+    if (err instanceof CastError) {
+      next(new BadRequestError(CAST_INCORRECT_RESULTID_ERROR_MESSAGE));
+    } else {
+      next(err);
+    }
   }
 };
 
@@ -159,4 +177,4 @@ const deleteResultById = async (req: Request, res: Response, next: NextFunction)
   }
 };
 
-export { getResults, getResultByIndex, createResult, updateResultData, deleteResultById };
+export { getResults, getResultByIndex, getResultById, createResult, updateResultData, deleteResultById };
