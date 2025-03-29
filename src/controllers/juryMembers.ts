@@ -154,8 +154,8 @@ const updateJuryMemberData = async (req: Request, res: Response, next: NextFunct
 };
 
 const updateJuryMemberInfo = (req: Request, res: Response, next: NextFunction) => {
-  const { surname, patronymic, name, about, link } = req.body;
-  updateJuryMemberData(req, res, next, { surname, patronymic, name, about, link });
+  const { surname, patronymic, name, about, link, imageUrl } = req.body;
+  updateJuryMemberData(req, res, next, { surname, patronymic, name, about, link, imageUrl });
 };
 
 const updateJuryMemberImage = (req: Request, res: Response, next: NextFunction) => {

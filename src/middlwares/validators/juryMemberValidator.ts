@@ -28,6 +28,7 @@ const juryMemberQueryParamsValidator = celebrate({
 const juryMemberInfoDataValidator = celebrate({
   // валидируем тело запроса
   body: Joi.object().keys({
+    imageUrl: Joi.string().required(),
     surname: Joi.string().required().min(2).max(30),
     patronymic: Joi.string().required().min(2).max(30),
     name: Joi.string().required().min(2).max(30),
